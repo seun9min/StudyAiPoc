@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudySync - AI 협업 학습 플랫폼</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: #5a67d8;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .study-room {
+            min-height: 400px;
+        }
+
+        .room-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+        }
+
+        .participants {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .participant {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        .ai-insights {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .ai-insights h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            width: 0%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+            animation: progressAnimation 3s ease-in-out infinite;
+        }
+
+        @keyframes progressAnimation {
+            0%, 100% { width: 65%; }
+            50% { width: 80%; }
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .chat-area {
+            height: 200px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 15px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .user-message {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+
+        .ai-message {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #667eea;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .room-controls {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-circle" style="width: 100px; height: 100px; top: 10%; left: 10%; animation-delay: 0s;"></div>
+        <div class="floating-circle" style="width: 150px; height: 150px; top: 60%; right: 10%; animation-delay: 2s;"></div>
+        <div class="floating-circle" style="width: 80px; height: 80px; bottom: 20%; left: 20%; animation-delay: 4s;"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🎓 StudySync</h1>
+            <p>AI와 함께하는 스마트 협업 학습 플랫폼</p>
+        </div>
+
+        <div class="main-content">
+            <div class="card study-room">
+                <h2>📚 실시간 스터디룸</h2>
+                
+                <div class="room-controls">
+                    <button class="btn btn-primary" onclick="joinRoom()">방 입장</button>
+                    <button class="btn btn-secondary" onclick="createRoom()">방 만들기</button>
+                    <button class="btn btn-secondary" onclick="startPomodoro()">포모도로 시작</button>
+                </div>
+
+                <div class="participants">
+                    <div class="participant">
+                        <div class="status-indicator"></div>
+                        김민수 (컴공 3학년)
+                    </div>
+                    <div class="participant">
+                        <div class="status-indicator"></div>
+                        이지원 (수학과 2학년)
+                    </div>
+                    <div class="participant">
+                        <div class="status-indicator"></div>
+                        박준호 (물리학과 4학년)
+                    </div>
+                </div>
+
+                <div>
+                    <strong>현재 학습 중:</strong> 데이터구조와 알고리즘
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <small>집중도: 82% | 남은 시간: 23분</small>
+                </div>
+
+                <div class="ai-insights">
+                    <h3>
+                        <div class="ai-icon">🤖</div>
+                        AI 학습 인사이트
+                    </h3>
+                    <p>현재 그룹의 학습 패턴을 분석한 결과, 트리 구조 문제에서 어려움을 겪고 있습니다. 
+                    추천 학습 자료와 맞춤형 문제를 제공해드릴까요?</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>💬 AI 튜터 채팅</h2>
+                
+                <div class="chat-area" id="chatArea">
+                    <div class="chat-message ai-message">
+                        안녕하세요! AI 튜터입니다. 어떤 것을 도와드릴까요? 📖
+                    </div>
+                    <div class="chat-message user-message">
+                        이진 트리 순회 방법에 대해 설명해주세요
+                    </div>
+                    <div class="chat-message ai-message">
+                        이진 트리 순회는 3가지 방법이 있어요:<br>
+                        1️⃣ 전위순회 (Pre-order)<br>
+                        2️⃣ 중위순회 (In-order)<br>
+                        3️⃣ 후위순회 (Post-order)<br>
+                        각각의 특징을 자세히 설명해드릴까요?
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" class="chat-input" placeholder="질문을 입력하세요..." id="chatInput">
+                    <button class="btn btn-primary" onclick="sendMessage()">전송</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>AI 맞춤 학습</h3>
+                <p>개인의 학습 패턴을 분석하여 최적화된 학습 경로를 제공합니다.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>실시간 협업</h3>
+                <p>전국의 학생들과 실시간으로 함께 공부하고 지식을 공유하세요.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>학습 분석</h3>
+                <p>상세한 학습 통계와 성과 분석으로 효율적인 학습을 지원합니다.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>스마트 문제 추천</h3>
+                <p>실력 수준에 맞는 문제를 AI가 자동으로 선별하여 제공합니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 현재 접속자 수 시뮬레이션
+        let currentUsers = 1247;
+        
+        // 실시간 사용자 수 업데이트
+        function updateUserCount() {
+            currentUsers += Math.floor(Math.random() * 5) - 2;
+            if (currentUsers < 1000) currentUsers = 1000;
+            if (currentUsers > 2000) currentUsers = 2000;
+        }
+
+        // 방 입장 기능
+        function joinRoom() {
+            const rooms = [
+                "알고리즘 스터디룸 🔥",
+                "운영체제 집중반 💻",
+                "네트워크 마스터클래스 🌐",
+                "데이터베이스 심화과정 🗄️"
+            ];
+            const randomRoom = rooms[Math.floor(Math.random() * rooms.length)];
+            alert(`"${randomRoom}"에 입장했습니다! 🎉`);
+            
+            // 참여자 목록 업데이트 시뮬레이션
+            setTimeout(() => {
+                const newParticipant = document.createElement('div');
+                newParticipant.className = 'participant';
+                newParticipant.innerHTML = `
+                    <div class="status-indicator"></div>
+                    당신 (컴공 학생)
+                `;
+                document.querySelector('.participants').appendChild(newParticipant);
+            }, 1000);
+        }
+
+        // 방 만들기 기능
+        function createRoom() {
+            const roomName = prompt("새로운 스터디룸 이름을 입력하세요:");
+            if (roomName) {
+                alert(`"${roomName}" 스터디룸이 생성되었습니다! 🏠`);
+            }
+        }
+
+        // 포모도로 타이머 시작
+        function startPomodoro() {
+            alert("포모도로 타이머 시작! ⏰\n25분 집중 → 5분 휴식");
+            
+            // 진행률 바 애니메이션
+            const progressBar = document.querySelector('.progress-fill');
+            progressBar.style.animation = 'none';
+            progressBar.style.width = '0%';
+            setTimeout(() => {
+                progressBar.style.animation = 'progressAnimation 1500s linear';
+                progressBar.style.width = '100%';
+            }, 100);
+        }
+
+        // 채팅 메시지 전송
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const chatArea = document.getElementById('chatArea');
+            
+            if (input.value.trim()) {
+                // 사용자 메시지 추가
+                const userMessage = document.createElement('div');
+                userMessage.className = 'chat-message user-message';
+                userMessage.textContent = input.value;
+                chatArea.appendChild(userMessage);
+                
+                // AI 응답 시뮬레이션
+                setTimeout(() => {
+                    const aiResponses = [
+                        "좋은 질문이에요! 더 자세히 설명해드릴게요. 🤔",
+                        "이 부분은 많은 학생들이 어려워하는 개념이에요. 단계별로 설명해드릴게요! 📝",
+                        "실습 문제를 함께 풀어보면서 이해해보는 것은 어떨까요? 💪",
+                        "관련된 참고 자료도 추천해드릴게요! 📚"
+                    ];
+                    
+                    const aiMessage = document.createElement('div');
+                    aiMessage.className = 'chat-message ai-message';
+                    aiMessage.textContent = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+                    chatArea.appendChild(aiMessage);
+                    
+                    chatArea.scrollTop = chatArea.scrollHeight;
+                }, 1000);
+                
+                input.value = '';
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }
+        }
+
+        // Enter 키로 메시지 전송
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // 실시간 업데이트 시뮬레이션
+        setInterval(updateUserCount, 5000);
+
+        // 페이지 로드 시 환영 메시지
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(45deg, #667eea, #764ba2);
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                    z-index: 1000;
+                    animation: slideIn 0.5s ease;
+                `;
+                notification.textContent = '🎉 StudySync에 오신 것을 환영합니다!';
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.5s ease';
+                    setTimeout(() => notification.remove(), 500);
+                }, 3000);
+            }, 2000);
+        });
+
+        // 동적 배경 효과
+        function createFloatingElement() {
+            const element = document.createElement('div');
+            element.style.cssText = `
+                position: fixed;
+                width: ${Math.random() * 100 + 50}px;
+                height: ${Math.random() * 100 + 50}px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+                pointer-events: none;
+                top: ${Math.random() * 100}vh;
+                left: ${Math.random() * 100}vw;
+                animation: float ${Math.random() * 3 + 3}s ease-in-out infinite;
+                z-index: -1;
+            `;
+            document.body.appendChild(element);
+            
+            setTimeout(() => element.remove(), 6000);
+        }
+
+        // 주기적으로 배경 요소 생성
+        setInterval(createFloatingElement, 3000);
+    </script>
+</body>
+</html>
